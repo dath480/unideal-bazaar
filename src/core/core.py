@@ -1,25 +1,27 @@
 import requests
 from requests import Response
 
+URL = "https://api.hypixel.net/v2/skyblock/bazaar"
+
 
 def fetch() -> dict:
     raw_dictionary: dict = {}
 
     try:
-        contents: Response = requests.get("https://api.hypixel.net/v2/skyblock/bazaar")
+        contents: Response = requests.get(URL)
         raw_dictionary = contents.json()["products"]
     except requests.exceptions.ConnectionError:
         print("Error: Unable to connect to Hypixel API")
         raise
     except requests.Timeout:
-        print("Error: Timedout")
+        print("Error: Timeout")
         raise
     except requests.HTTPError:
         print("Error: HTTP Error")
         raise
-    
+
     id_price_dict: dict = {}
-    
+
     for item in raw_dictionary.keys():
         id_price_dict[item] = raw_dictionary[item]["quick_status"]["buyPrice"]
 
@@ -49,7 +51,7 @@ def find_matches(key_list: list, target: str) -> list:
 
 
 def q_typo_detect(c: str, t: str) -> bool:
-    Q_TYPO_DICT = {
+    q_typo_dict: dict[str , str] = {
         "A": "AQWSZ",
         "B": "BVGHN ",
         "C": "CXDFV ",
@@ -80,13 +82,12 @@ def q_typo_detect(c: str, t: str) -> bool:
     }
 
     try:
-        if Q_TYPO_DICT[c].find(t) != -1:
+        if q_typo_dict[c].find(t) != -1:
             return True
         else:
             return False
-    except(KeyError):
+    except KeyError:
         return False
-
 
 
 def weighted_cmp(key_list: list, target: str) -> str:
@@ -95,13 +96,13 @@ def weighted_cmp(key_list: list, target: str) -> str:
 
     for key in key_list:
         match_count: int = 0
-        
+
         for i in range(min(len(key), len(target))):
             if key[i] == target[i]:
                 match_count += 1
-        
+
         compatibility = match_count/len(key)
-        if ((compatibility > top_compatibility) & (compatibility > 0.7)):
+        if (compatibility > top_compatibility) and (compatibility > 0.7):
             top_contestant = key
             top_compatibility = compatibility
 
@@ -116,48 +117,10 @@ def get_price(dictionary: dict, target: str) -> None:
         case 1:
             print(dictionary[match_list[0]])
         case 0:
-            print("Item not found") 
+            print("Item not found")
 
             if (tmp := weighted_cmp(key_list, target)) != "":
                 print("Did you mean " + tmp + "?")
         case _:
             print(*match_list, sep="   ")
     return None
-
-
-def main() -> None:
-    auto_fetch: bool = False
-    
-    try:
-        item_dict = fetch()
-    except:
-        return
-    
-    while True:
-        print("Options:     AutoFetch     Update     Item Id     Exit")
-        input_string: str = input()
-
-        match input_string.lower():
-            case "exit":
-                print("Exited")
-                break
-            case "autofetch":
-                auto_fetch = not auto_fetch
-                print("AutoFetch: " + str(auto_fetch))
-            case "update":
-                try:
-                    fetch()
-                except:
-                    return
-                print("Updated")
-            case _:
-                if auto_fetch: 
-                    try:
-                        fetch()
-                    except:
-                        return
-                get_price(item_dict, input_string.upper())
-    return
-
-if __name__ == "__main__":
-    main()
