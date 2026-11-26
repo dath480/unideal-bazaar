@@ -1,5 +1,7 @@
 import requests
+import datetime
 from requests import Response
+from datetime import datetime
 
 URL = "https://api.hypixel.net/v2/skyblock/bazaar"
 
@@ -49,7 +51,7 @@ def find_matches(key_list: list, target: str) -> list:
     tmp_list.append(target)
     return tmp_list
 
-
+"""
 def q_typo_detect(c: str, t: str) -> bool:
     q_typo_dict: dict[str , str] = {
         "A": "AQWSZ",
@@ -88,7 +90,7 @@ def q_typo_detect(c: str, t: str) -> bool:
             return False
     except KeyError:
         return False
-
+"""
 
 def weighted_cmp(key_list: list, target: str) -> str:
     top_contestant: str = "None"
@@ -125,3 +127,31 @@ def get_price(dictionary: dict, target: str) -> None:
         case _:
             print(*match_list, sep="   ")
     return None
+
+class BuyPrices:
+
+    id_price_dict: dict = {}
+    last_fetch_time: datetime = None
+
+    def Update(self) -> None:
+        try:
+            self.id_price_dict = fetch()
+        except:
+            raise
+
+
+    def FetchPrices(self) -> dict:
+        now: datetime = datetime.now()
+        
+        if (now - self.last_fetch_time).seconds >= 60:
+            print("fetched")
+            self.Update()
+            self.last_fetch_time = now
+        else:
+            print("cached")
+        return self.id_price_dict
+    
+
+    def __init__(self) -> None:
+        self.Update()
+        self.last_fetch_time = datetime.now()

@@ -1,35 +1,24 @@
-from core.core import fetch, get_price
-
+from core.core import get_price, BuyPrices
 
 def run() -> None:
-    auto_fetch: bool = False
-
     try:
-        item_dict = fetch()
+        price_cacher: BuyPrices = BuyPrices()
     except:
         return
 
+    item_dict: dict = {}
+
     while True:
-        print("Options:     AutoFetch     Update     Item Id     Exit\n")
+        print("Options:     Item Id     Exit\n")
         input_string: str = input().upper()
         match input_string:
             case "EXIT":
                 print("Exited")
                 break
-            case "AUTOFETCH":
-                auto_fetch = not auto_fetch
-                print("AutoFetch: " + str(auto_fetch))
-            case "UPDATE":
+            case _:
                 try:
-                    fetch()
+                    item_dict = price_cacher.FetchPrices()
+                    get_price(item_dict, input_string)
                 except:
                     return
-                print("Updated")
-            case _:
-                if auto_fetch:
-                    try:
-                        fetch()
-                    except:
-                        return
-                get_price(item_dict, input_string)
     return
