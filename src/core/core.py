@@ -91,7 +91,7 @@ def q_typo_detect(c: str, t: str) -> bool:
 
 
 def weighted_cmp(key_list: list, target: str) -> str:
-    top_contestant: str = ""
+    top_contestant: str = "None"
     top_compatibility: float = 0.0
 
     for key in key_list:
@@ -101,8 +101,8 @@ def weighted_cmp(key_list: list, target: str) -> str:
             if key[i] == target[i]:
                 match_count += 1
 
-        compatibility = match_count/len(key)
-        if (compatibility > top_compatibility) and (compatibility > 0.7):
+        compatibility = match_count/max(len(key), len(target))
+        if (compatibility > top_compatibility) and (compatibility > 0.4):
             top_contestant = key
             top_compatibility = compatibility
 
@@ -115,11 +115,12 @@ def get_price(dictionary: dict, target: str) -> None:
 
     match len(match_list):
         case 1:
+            print(match_list[0])
             print(dictionary[match_list[0]])
         case 0:
             print("Item not found")
 
-            if (tmp := weighted_cmp(key_list, target)) != "":
+            if (tmp := weighted_cmp(key_list, target)) != "None":
                 print("Did you mean " + tmp + "?")
         case _:
             print(*match_list, sep="   ")
