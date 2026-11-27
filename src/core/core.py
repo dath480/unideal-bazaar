@@ -11,6 +11,8 @@ def fetch() -> dict:
 
     try:
         contents: Response = requests.get(URL)
+        contents.raise_for_status()
+
         raw_dictionary = contents.json()["products"]
     except requests.exceptions.ConnectionError:
         print("Error: Unable to connect to Hypixel API")
@@ -19,7 +21,7 @@ def fetch() -> dict:
         print("Error: Timeout")
         raise
     except requests.HTTPError:
-        print("Error: HTTP Error")
+        print(f"Error: HTTP Error {contents.status_code}")
         raise
 
     id_price_dict: dict = {}
