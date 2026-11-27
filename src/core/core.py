@@ -13,7 +13,12 @@ def fetch() -> dict:
         contents: Response = requests.get(URL)
         contents.raise_for_status()
 
-        raw_dictionary = contents.json()["products"]
+        raw_dictionary = contents.json()
+
+        if raw_dictionary["success"] == False:
+            raise requests.exceptions.HTTPError
+        
+        raw_dictionary = raw_dictionary["products"]
     except requests.exceptions.ConnectionError:
         print("Error: Unable to connect to Hypixel API")
         raise
