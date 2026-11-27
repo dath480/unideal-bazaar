@@ -9,8 +9,8 @@ Named (appropriately) after observing the prices up in shambles.
 - [x] Add error handling for the network request
 - [x] Implement not-complete but specific-enough pattern matching
 - [x] Implement closest-match suggestion on invalid input
-- [ ] Cache and reuse the received response in short intervals
-- [ ] Invalidate and re-populate the cache after a certain duration (e.g. 30 seconds)
+- [x] Cache and reuse the received response in short intervals
+- [x] Invalidate and re-populate the cache after a certain duration (e.g. 30 seconds)
 - [x] Change the data representation to dictionary of names->prices instead of holding the entire JSON
 
 ## Later Features
