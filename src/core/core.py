@@ -21,7 +21,10 @@ def fetch() -> dict:
         print("Error: Timeout")
         raise
     except requests.HTTPError:
-        print(f"Error: HTTP Error {contents.status_code}")
+        print(f"Error: HTTP error {contents.status_code}")
+        raise
+    except requests.exceptions.JSONDecodeError:
+        print("Error: JSON decode error")
         raise
 
     id_price_dict: dict = {}
